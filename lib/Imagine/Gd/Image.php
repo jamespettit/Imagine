@@ -33,6 +33,8 @@ final class Image implements ImageInterface
     private $resource;
     private $layers;
 
+    private $exifData = array();
+
     /**
      * Constructs a new Image instance using the result of
      * imagecreatetruecolor()
@@ -52,6 +54,11 @@ final class Image implements ImageInterface
         if (is_resource($this->resource) && 'gd' === get_resource_type($this->resource)) {
             imagedestroy($this->resource);
         }
+    }
+
+    public function setExifData(array $exifData)
+    {
+        $this->exifData = $exifData;
     }
 
     /**
@@ -180,6 +187,22 @@ final class Image implements ImageInterface
         imagedestroy($this->resource);
 
         $this->resource = $resource;
+
+        return $this;
+    }
+
+    public function autorotate(Color $background = null)
+    {
+        if (isset($this->exifData['Orientation'])) {
+            switch($this->exifData['Orientation']) {
+                case 8:
+                    return $this->rotate(90, $background);
+                case 3:
+                    return $this->rotate(180, $background);
+                case 6:
+                    return $this->rotate(-90, $background);
+            }
+        }
 
         return $this;
     }
