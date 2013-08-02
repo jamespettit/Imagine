@@ -34,5 +34,8 @@
     "psr-0": {
       "Imagine": "lib/"
     }
+  },
+  "replace": {
+    "imagine/imagine": "v.0.4.1"
   }
 }
